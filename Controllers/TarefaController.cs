@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using TrilhaApiDesafio.Context;
 using TrilhaApiDesafio.Models;
 
@@ -29,10 +30,11 @@ namespace TrilhaApiDesafio.Controllers
         }
 
         [HttpGet("ObterTodos")]
-        public IActionResult ObterTodos()
+        public IActionResult ObterTodos(string titulo)
         {
             // TODO: Buscar todas as tarefas no banco utilizando o EF
-            return Ok();
+            var tarefas = _context.Tarefas.Where(x => x.Titulo.Contains(titulo));
+            return Ok(tarefas);
         }
 
         [HttpGet("ObterPorTitulo")]
@@ -40,7 +42,8 @@ namespace TrilhaApiDesafio.Controllers
         {
             // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o titulo recebido por parâmetro
             // Dica: Usar como exemplo o endpoint ObterPorData
-            return Ok();
+            var tarefas = _context.Tarefas.Where(x => x.Titulo.Contains(titulo));
+            return Ok(tarefas);
         }
 
         [HttpGet("ObterPorData")]
@@ -54,6 +57,7 @@ namespace TrilhaApiDesafio.Controllers
         public IActionResult ObterPorStatus(EnumStatusTarefa status)
         {
             // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o status recebido por parâmetro
+            
             // Dica: Usar como exemplo o endpoint ObterPorData
             var tarefa = _context.Tarefas.Where(x => x.Status == status);
             return Ok(tarefa);
@@ -101,6 +105,8 @@ namespace TrilhaApiDesafio.Controllers
             if (tarefaBanco == null)
                 return NotFound();
 
+            _context.Tarefas.Remove(tarefaBanco);
+            _context.SaveChanges();
             // TODO: Remover a tarefa encontrada através do EF e salvar as mudanças (save changes)
             return NoContent();
         }
